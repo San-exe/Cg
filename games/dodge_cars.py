@@ -78,9 +78,12 @@ class DodgeCars:
             for event in events:
                 if event.type == pygame.QUIT:
                     self.game.running = False
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    self.game.state = "menu"
-                    self.reset()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.game.state = "menu"
+                        self.reset()
+                    elif event.key == pygame.K_SPACE:
+                        self.reset()
             self.draw_screen(game_over=True, time=current_time)
             return
 
@@ -316,7 +319,7 @@ class DodgeCars:
             end_text = self.title_font.render("VEHICLE DESTROYED", True, (255, 100, 100))
             self.game.screen.blit(end_text, (width // 2 - end_text.get_width() // 2, height // 2 - 40))
             
-            return_text = self.text_font.render("Simulation Failed. Press ESC to restart/return.", True, TEXT)
+            return_text = self.text_font.render("Simulation Failed. Press SPACE to restart or ESC to return.", True, TEXT)
             self.game.screen.blit(return_text, (width // 2 - return_text.get_width() // 2, height // 2 + 20))
 
         pygame.display.flip()

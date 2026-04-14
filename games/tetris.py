@@ -136,6 +136,8 @@ class Tetris:
                 if event.key == pygame.K_ESCAPE:
                     self.game.state = "menu"
                     self.reset()
+                elif self.game_over and event.key == pygame.K_SPACE:
+                    self.reset()
                 if not self.game_over:
                     if event.key == pygame.K_LEFT:
                         if not self.check_collision(self.piece_x - 1, self.piece_y, self.shape):
@@ -297,7 +299,7 @@ class Tetris:
             self.game.screen.blit(overlay, (0, 0))
             
             game_over_text = self.title_font.render("System Failure", True, (255, 100, 100))
-            prompt = self.text_font.render("Press ESC to reboot subsystem.", True, TEXT)
+            prompt = self.text_font.render("Press SPACE to restart, ESC to reboot subsystem.", True, TEXT)
             self.game.screen.blit(game_over_text, (width // 2 - game_over_text.get_width() // 2, height // 2 - 50))
             self.game.screen.blit(prompt, (width // 2 - prompt.get_width() // 2, height // 2 + 20))
 

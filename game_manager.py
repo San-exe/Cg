@@ -74,11 +74,17 @@ class GameManager:
         self.display_width, self.display_height = self.screen.get_size()
 
     def run(self):
-        if self.state != self.previous_state:
+        state_changed = self.state != self.previous_state
+        old_state = self.previous_state
+        if state_changed:
             self.previous_state = self.state
             current = getattr(self, self.state, None)
             if current is not None and hasattr(current, "reset"):
                 current.reset()
+
+            if old_state == "aim" and self.state != "aim":
+                pygame.mouse.set_visible(True)
+                self.aim._hidden_cursor = False
 
         events = pygame.event.get()
         for event in events:

@@ -101,6 +101,11 @@ class AimTrainer:
         
         elapsed = current_time - self.start_time
         remaining = max(0, self.game_time - elapsed)
+        game_over = remaining == 0
+        self.game_over = game_over
+
+        if game_over:
+            self.message = "Simulation Complete! Press SPACE to restart, ESC to return."
 
         for event in events:
             if event.type == pygame.QUIT:
@@ -109,6 +114,9 @@ class AimTrainer:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.game.state = "menu"
+                elif event.key == pygame.K_SPACE and game_over:
+                    self.reset()
+                    return
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 # Better true circular hit detection 
@@ -122,10 +130,8 @@ class AimTrainer:
                     self.spawn_explosion(tx, ty)
                     self.spawn_target()
                 elif remaining > 0:
+                    self.score = max(0, self.score - 1)
                     self.message = "Missed! Re-adjusting aim."
-
-        if remaining == 0:
-            self.message = "Simulation Complete! Press ESC to return."
 
         # Physics update
         if remaining > 0:

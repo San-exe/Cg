@@ -24,6 +24,7 @@ class MemoryGame:
         self.selected = []
         self.wait_until = 0
         self.score = 0
+        self.completed = False
         self.message = "Decrypt the Holographic Data Pairs!"
 
     def run(self, events):
@@ -40,6 +41,8 @@ class MemoryGame:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.game.state = "menu"
+                    self.reset()
+                elif event.key == pygame.K_SPACE and self.completed:
                     self.reset()
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if self.wait_until > now:
@@ -106,7 +109,8 @@ class MemoryGame:
                         self.message = "Match found!"
                         self.selected = []
                         if all(self.matched):
-                            self.message = "All data decrypted! Press ESC to return."
+                            self.completed = True
+                            self.message = "All data decrypted! Press SPACE to restart or ESC to return."
                     else:
                         self.message = "Mismatch detected. Realigning links..."
                         self.wait_until = pygame.time.get_ticks() + 1000
