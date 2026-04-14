@@ -10,7 +10,6 @@ class MainMenu:
             ("Dodge Cars", "cars"),
             ("Memory Game", "memory"),
             ("Tetris", "tetris"),
-            ("Toggle Fullscreen", "toggle_fullscreen"),
         ]
         self.buttons = []
 
@@ -63,7 +62,6 @@ class MainMenu:
         title = title_font.render("MINI GAME HUB", True, WHITE)
         subtitle = body_font.render("Choose your challenge and press a button.", True, SECONDARY)
         hint = body_font.render("Click any card or press 1-4 to start.", True, TEXT)
-        fullscreen_hint = body_font.render("Press F11 to toggle fullscreen/windowed.", True, SECONDARY)
         footer = body_font.render("Press ESC in any game to return.", True, TEXT)
 
         # ----------- DYNAMIC LAYOUT (FIX) -----------
@@ -101,23 +99,14 @@ class MainMenu:
         for button in self.buttons:
             button.draw(self.game.screen)
             if mouse_pressed and button.is_hovered():
-                if button.state == "toggle_fullscreen":
-                    self.game.toggle_fullscreen()
-                else:
-                    self.game.state = button.state
+                self.game.state = button.state
 
         # Footer (fixed to bottom)
         footer_y = panel_margin_y + panel_height - int(70 * scale)
-        fullscreen_y = panel_margin_y + panel_height - int(35 * scale)
 
         self.game.screen.blit(
             footer,
             (center_x - footer.get_width() // 2, footer_y)
-        )
-
-        self.game.screen.blit(
-            fullscreen_hint,
-            (center_x - fullscreen_hint.get_width() // 2, fullscreen_y)
         )
 
         # ----------- END FIX -----------
