@@ -61,6 +61,7 @@ class AimTrainer:
         # Random velocity vector for drift
         angle = uniform(0, math.pi * 2)
         speed = uniform(60.0, 150.0) # pixels per second
+        self.target_base_speed = speed
         self.target_v = [math.cos(angle) * speed, math.sin(angle) * speed]
         
         self.target_rect = pygame.Rect(0, 0, self.target_radius * 2, self.target_radius * 2)
@@ -135,6 +136,17 @@ class AimTrainer:
 
         # Physics update
         if remaining > 0:
+            # Gradually increase target speed over time (much stronger acceleration)
+            normalized = min(1.0, elapsed / self.game_time)
+            speed_factor = 1.0 + normalized * 3.5
+            current_speed = math.hypot(self.target_v[0], self.target_v[1])
+            if current_speed > 0:
+                dir_x = self.target_v[0] / current_speed
+                dir_y = self.target_v[1] / current_speed
+                scaled_speed = self.target_base_speed * speed_factor
+                self.target_v[0] = dir_x * scaled_speed
+                self.target_v[1] = dir_y * scaled_speed
+
             # Move target
             self.target_pos[0] += self.target_v[0] * dt
             self.target_pos[1] += self.target_v[1] * dt

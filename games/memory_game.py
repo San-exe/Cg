@@ -1,3 +1,4 @@
+import os
 import pygame
 import math
 from random import shuffle
@@ -13,7 +14,24 @@ class MemoryGame:
         from random import uniform
         self.stars = [{"x": uniform(0, 1), "y": uniform(0, 1), "r": uniform(1, 2.5), "alpha_offset": uniform(0, math.pi*2)} for _ in range(80)]
         
+        self.card_images = self.load_card_images()
         self.reset()
+
+    def load_card_images(self):
+        image_folder = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "assets", "memory_images"))
+        if not os.path.isdir(image_folder):
+            return []
+
+        images = []
+        for filename in sorted(os.listdir(image_folder)):
+            if filename.lower().endswith((".png", ".jpg", ".jpeg")):
+                try:
+                    path = os.path.join(image_folder, filename)
+                    image = pygame.image.load(path).convert_alpha()
+                    images.append(image)
+                except Exception:
+                    continue
+        return images
 
     def reset(self):
         self.cards = [i for i in range(8)] * 2
@@ -24,6 +42,7 @@ class MemoryGame:
         self.selected = []
         self.wait_until = 0
         self.score = 0
+        self.guesses = 0
         self.completed = False
         self.message = "Decrypt the Holographic Data Pairs!"
 
@@ -82,15 +101,8 @@ class MemoryGame:
         x = start_x + col * (size + gap)
         y = start_y + row * (size + gap)
         
-        # Determine exact float components
+        # Determine exact fixed position
         rect = pygame.Rect(x, y, size, size)
-        
-        # Zero-gravity hover physics
-        hover_x = math.cos(time_sec * 1.5 + index) * 6.0
-        hover_y = math.sin(time_sec * 2.0 + index * 1.2) * 8.0
-        rect.centerx += int(hover_x)
-        rect.centery += int(hover_y)
-        
         return rect
 
     def handle_click(self, pos, time_sec):
@@ -101,6 +113,7 @@ class MemoryGame:
                 self.revealed[index] = True
                 self.selected.append(index)
                 if len(self.selected) == 2:
+                    self.guesses += 1
                     first, second = self.selected
                     if self.cards[first] == self.cards[second]:
                         self.matched[first] = True
@@ -154,11 +167,13 @@ class MemoryGame:
         title = self.title_font.render("Hologram Grid", True, ACCENT2)
         status = self.text_font.render(self.message, True, WHITE)
         score_text = self.text_font.render(f"Pairs found: {self.score}/8", True, WHITE)
+        guess_text = self.text_font.render(f"Guesses: {self.guesses}", True, WHITE)
 
         center_x = width // 2
         self.game.screen.blit(title, (center_x - title.get_width() // 2, 100))
         self.game.screen.blit(score_text, (center_x - score_text.get_width() // 2, 160))
-        self.game.screen.blit(status, (center_x - status.get_width() // 2, 195))
+        self.game.screen.blit(guess_text, (center_x - guess_text.get_width() // 2, 190))
+        self.game.screen.blit(status, (center_x - status.get_width() // 2, 220))
 
         # Render floating holographic cards
         for index in range(16):
@@ -186,22 +201,23 @@ class MemoryGame:
                         pygame.draw.rect(self.game.screen, ACCENT2, inner, width=2, border_radius=6)
                 else:
                     # FRONT of the hologram tile (data revealed)
-                    color_id = self.cards[index]
-                    c_palette = [ACCENT, ACCENT2, (255, 116, 196), (115, 247, 172), (255, 201, 84), (180, 104, 255), (116, 211, 255), (170, 255, 192)]
-                    c = c_palette[color_id]
-                    
-                    pygame.draw.rect(self.game.screen, c, draw_rect, border_radius=16)
-                    pygame.draw.rect(self.game.screen, (255, 255, 255), draw_rect, width=2, border_radius=16)
-                    
-                    # Glowing center core
-                    core = draw_rect.inflate(-current_w * 0.6, -size * 0.6)
-                    if core.width > 2 and core.height > 2:
-                        pygame.draw.rect(self.game.screen, (255, 255, 255), core, border_radius=4)
-                        
-                    # Glow if matched
+                    card_id = self.cards[index]
+                    if self.card_images and card_id < len(self.card_images):
+                        img = self.card_images[card_id]
+                        img = pygame.transform.smoothscale(img, (draw_rect.width, draw_rect.height))
+                        self.game.screen.blit(img, draw_rect)
+                    else:
+                        c_palette = [ACCENT, ACCENT2, (255, 116, 196), (115, 247, 172), (255, 201, 84), (180, 104, 255), (116, 211, 255), (170, 255, 192)]
+                        c = c_palette[card_id % len(c_palette)]
+                        pygame.draw.rect(self.game.screen, c, draw_rect, border_radius=16)
+                        pygame.draw.rect(self.game.screen, (255, 255, 255), draw_rect, width=2, border_radius=16)
+                        core = draw_rect.inflate(-current_w * 0.6, -size * 0.6)
+                        if core.width > 2 and core.height > 2:
+                            pygame.draw.rect(self.game.screen, (255, 255, 255), core, border_radius=4)
+
                     if self.matched[index] and progress > 0.99:
                         glow = pygame.Surface((draw_rect.width + 20, draw_rect.height + 20), pygame.SRCALPHA)
-                        pygame.draw.rect(glow, (*c, 50), glow.get_rect(), border_radius=20)
+                        pygame.draw.rect(glow, (255, 255, 255, 50), glow.get_rect(), border_radius=20)
                         self.game.screen.blit(glow, (draw_rect.left - 10, draw_rect.top - 10))
 
         pygame.display.flip()
