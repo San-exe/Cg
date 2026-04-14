@@ -24,7 +24,7 @@ class GameManager:
         info = pygame.display.Info()
         self._desktop_w, self._desktop_h = info.current_w, info.current_h
 
-        pygame.display.set_caption("CG Game Hub")
+        pygame.display.set_caption("MINI GAME HUB")
         self.screen = self._create_display()
         self.clock = pygame.time.Clock()
 

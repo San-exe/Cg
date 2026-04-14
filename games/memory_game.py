@@ -164,7 +164,7 @@ class MemoryGame:
         pygame.draw.rect(self.game.screen, ACCENT, (line_x, 80, line_w, 4), border_radius=2)
 
         # Typography
-        title = self.title_font.render("Hologram Grid", True, ACCENT2)
+        title = self.title_font.render("Memory Match", True, ACCENT2)
         status = self.text_font.render(self.message, True, WHITE)
         score_text = self.text_font.render(f"Pairs found: {self.score}/8", True, WHITE)
         guess_text = self.text_font.render(f"Guesses: {self.guesses}", True, WHITE)

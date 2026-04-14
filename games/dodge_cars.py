@@ -241,10 +241,10 @@ class DodgeCars:
         self.game.screen.blit(hud_surf, (0, 0))
         pygame.draw.rect(self.game.screen, (*ACCENT, 80), hud_rect, width=2, border_radius=30)
         
-        title = self.title_font.render("Anti-Gravity Highway", True, ACCENT2)
+        title = self.title_font.render("Road Dodger", True, ACCENT2)
         score_text = self.text_font.render(f"SCORE: {self.score}", True, WHITE)
         speed_text = self.text_font.render(f"SPEED: {int(self.speed)} KM/H", True, WHITE)
-        instructions = self.text_font.render("Use Left and Right to drift! ESC returns.", True, TEXT)
+        instructions = self.text_font.render("Use Left and Right to dodge cars! ESC returns.", True, TEXT)
 
         self.game.screen.blit(title, (70, 70))
         self.game.screen.blit(score_text, (70, 120))

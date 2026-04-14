@@ -281,7 +281,7 @@ class Tetris:
         pygame.draw.rect(self.game.screen, (*CARD, 180), ui_rect, border_radius=16)
         pygame.draw.rect(self.game.screen, ACCENT, ui_rect, width=2, border_radius=16)
         
-        title = self.title_font.render("Anti-Gravity", True, ACCENT2)
+        title = self.title_font.render("Block Drop", True, ACCENT2)
         score_text = self.text_font.render(f"SCORE: {self.score}", True, WHITE)
         level_text = self.text_font.render(f"LEVEL: {self.level}", True, WHITE)
         hint1 = self.text_font.render("ARROWS: Move & Rotate", True, SECONDARY)

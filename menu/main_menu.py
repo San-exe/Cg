@@ -60,7 +60,7 @@ class MainMenu:
         pygame.draw.rect(self.game.screen, ACCENT, card_rect, width=int(3 * scale), border_radius=int(30 * scale))
 
         # Text surfaces
-        title = title_font.render("CG Game Hub", True, WHITE)
+        title = title_font.render("MINI GAME HUB", True, WHITE)
         subtitle = body_font.render("Choose your challenge and press a button.", True, SECONDARY)
         hint = body_font.render("Click any card or press 1-4 to start.", True, TEXT)
         fullscreen_hint = body_font.render("Press F11 to toggle fullscreen/windowed.", True, SECONDARY)

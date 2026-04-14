@@ -221,7 +221,7 @@ class AimTrainer:
         pygame.draw.rect(self.game.screen, ACCENT, (64, 74, width - 128, 2), border_radius=1)
 
         # Main typography
-        title = self.title_font.render("Zero-Gravity Simulator", True, ACCENT2)
+        title = self.title_font.render("Target Practice", True, ACCENT2)
         score_text = self.text_font.render(f"SCORE: {self.score}", True, (255, 255, 255))
         timer_text = self.text_font.render(f"TIME: {remaining // 1000}.{remaining % 1000 // 100:01d}", True, (255, 255, 255))
         instructions = self.text_font.render(self.message, True, TEXT)
